@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>bankz</title>
+<meta name="description" content="The bank of the city. Lock your bags in safe-deposit boxes on Solana that nobody can open early, watch the vault, stack wins in gold and earn the black card.">
+<meta property="og:title" content="bankz">
+<meta property="og:description" content="The bank of the city. Lock your bags in a safe-deposit box, stack the wins in gold, earn the black card.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://bankzdot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:image" content="https://bankzdot.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#03120d">
+<link rel="icon" href="/assets/img/bankz.ico?v=1" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/bankz-32.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/bankz-192.png?v=1">
+<link rel="apple-touch-icon" href="/assets/img/bankz-180.png?v=1">
+<link rel="preload" href="/assets/fonts/bowlby.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/img/city-poster.jpg" as="image" media="(orientation:landscape)">
+<link rel="preload" href="/assets/img/city-poster-m.jpg" as="image" media="(orientation:portrait)">
+<script>document.documentElement.classList.add('js')</script>
+<script type="importmap">{"imports":{"three":"/assets/vendor/three/three.module.min.js","three/addons/":"/assets/vendor/three/addons/"}}</script>
+<style>
+@font-face{font-family:Bowlby;src:url(/assets/fonts/bowlby.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Unbounded;src:url(/assets/fonts/unbounded.woff2) format('woff2');font-weight:200 900;font-display:swap}
+@font-face{font-family:Inter;src:url(/assets/fonts/inter.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:JBM;src:url(/assets/fonts/jbm.woff2) format('woff2');font-weight:100 800;font-display:swap}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+:root{--ease:cubic-bezier(.2,.8,.2,1);--bg:#03120d;--ink:#eef7f0;--sub:#b9d3c6;--dim:#7fa392;--gold:#ffcd4a;--gold2:#e6a034;--mint:#2ee6a0;--cream:#fff8e6;--ink2:#021a12;--line2:#1b5440;--mono:JBM,ui-monospace,SFMono-Regular,Menlo,monospace;--disp:Unbounded,Inter,system-ui,sans-serif}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden;color-scheme:dark}
+body{font-family:Inter,system-ui,sans-serif;font-size:15.5px;line-height:1.6;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:rgba(255,205,74,.3)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* ---------------- hero: the city at night, the bank on the tallest tower */
+.hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;background:var(--bg);color:var(--cream);isolation:isolate}
+.hero .poster{position:absolute;inset:0;background:url(/assets/img/city-poster.jpg) 50% 50%/cover no-repeat;z-index:-3}
+@media (orientation:portrait){.hero .poster{background-image:url(/assets/img/city-poster-m.jpg)}}
+#cityGL{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-2;opacity:0;transition:opacity 1.6s var(--ease),transform 2.6s var(--ease)}
+.hero .poster{transition:transform 2.6s var(--ease)}
+.js:not(.entered) .hero .poster,.js:not(.entered) #cityGL{transform:scale(1.08)}
+#cityGL.on{opacity:1}
+.hero .veil{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(58% 44% at 50% 50%,rgba(3,18,13,.5),transparent 72%),linear-gradient(180deg,rgba(3,18,13,.3) 0%,rgba(3,18,13,0) 24%,rgba(3,18,13,0) 62%,rgba(3,18,13,.86) 94%,#03120d 100%)}
+#dust{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
+.stack{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 20px 70px;pointer-events:none}
+.stack>*{pointer-events:auto}
+.wm{position:relative;font-family:Bowlby,var(--disp);font-weight:400;font-size:clamp(76px,12.5vw,196px);line-height:.88;letter-spacing:-.005em;color:var(--cream);text-shadow:.045em .045em 0 var(--gold2),.085em .085em 0 var(--ink2);white-space:nowrap;padding-right:.08em;perspective:600px}
+.wm .l{display:inline-block;transform-origin:50% 60%;backface-visibility:hidden}
+.wm .l.in{animation:flipIn .7s var(--ease) both}
+@keyframes flipIn{from{transform:rotateX(-92deg) translateY(-.08em);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
+.wm .l.flip{animation:flipOne .62s var(--ease)}
+@keyframes flipOne{0%{transform:none}45%{transform:rotateX(90deg)}55%{transform:rotateX(-90deg)}100%{transform:none}}
+.spk{position:absolute;width:.13em;height:.13em;background:var(--cream);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);animation:pop .5s .85s var(--ease) both,twinkle 3s 1.4s ease-in-out infinite;pointer-events:none}
+.spk.s1{right:-.06em;top:-.04em}.spk.s2{right:-.2em;top:.2em;width:.06em;height:.06em;background:var(--gold);animation-delay:.95s,1.9s}.spk.s3{left:-.12em;bottom:.04em;width:.08em;height:.08em;animation-delay:1.05s,2.3s}
+.js:not(.entered) .feat,.js:not(.entered) .cta,.js:not(.entered) .links,.js:not(.entered) .spk{animation:none;opacity:0}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.5) rotate(45deg);opacity:.75}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+.feat{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5em 1em;margin-top:clamp(20px,3.4vh,34px);font-family:var(--disp);font-weight:700;font-size:clamp(12px,1.15vw,16.5px);letter-spacing:.24em;text-transform:uppercase;color:var(--cream);text-shadow:.08em .08em 0 var(--ink2),0 0 14px rgba(2,13,9,.9),0 0 28px rgba(2,13,9,.6);animation:rise .7s .38s var(--ease) both;font-feature-settings:normal}
+.feat i{width:.62em;height:.62em;background:var(--gold);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
+.feat .fg{display:inline-flex;align-items:center;gap:1em;white-space:nowrap}
+.feat [data-t]{display:inline-block}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}}
+.cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:clamp(26px,4.2vh,42px);animation:rise .7s .5s var(--ease) both}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 30px;border-radius:999px;font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,letter-spacing .45s var(--ease)}
+.btn:hover{letter-spacing:.24em}
+.btn .a{transition:transform .35s var(--ease)}.btn:hover .a{transform:translateX(4px)}
+.btn.pri{background:linear-gradient(180deg,#ffd970,#f2b736);color:#2a1a02;box-shadow:0 5px 0 #a8740f,0 0 40px -10px rgba(255,205,74,.7)}
+.btn.pri:hover{transform:translateY(-2px);box-shadow:0 7px 0 #a8740f,0 0 50px -8px rgba(255,205,74,.8)}
+.btn.pri::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-120%);animation:shine 5.5s 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes shine{0%{transform:translateX(-120%)}22%,100%{transform:translateX(120%)}}
+.btn.sec{background:rgba(255,248,230,.08);color:var(--cream);border:1.5px solid rgba(255,248,230,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn.sec:hover{background:rgba(255,248,230,.16)}
+.btn{-webkit-tap-highlight-color:transparent}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.btn.pri:active{transform:translateY(3px);box-shadow:0 2px 0 #a8740f,0 0 30px -10px rgba(255,205,74,.6);transition-duration:.08s}
+.btn.sec:active{transform:translateY(2px);background:rgba(255,248,230,.2);transition-duration:.08s}
+.btn .bl{display:inline-block}
+.links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px}.links:empty{display:none}
+.ca{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 14px;border-radius:999px;background:rgba(3,18,13,.6);border:1px solid var(--line2);font-family:var(--mono);font-size:12.5px}
+.ca span{font-weight:800}.ca button{height:30px;padding:0 12px;border-radius:999px;background:var(--gold);color:#2a1a02;font-weight:800;font-size:11px;letter-spacing:.08em}
+.xl{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(3,18,13,.6);border:1px solid var(--line2)}
+
+/* ---------------- the vault: two steel doors meet in the middle, brass bars cross the seam, a wheel sits on the lock plate.
+   Hold anywhere (or any key): the wheel spins up, the bars pull back one by one and the doors slide apart onto the city.
+   Left alone it opens by itself in about two seconds. On the way out the doors slam shut. */
+.vdoor{--px:min(1px,calc(100vmin / 760));position:fixed;inset:0;z-index:50;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
+.vdoor.held{cursor:grabbing}
+.vd-l,.vd-r{position:absolute;top:0;bottom:0;width:50%;translate:var(--sx,0px) var(--sy,0px);will-change:transform;background:
+  linear-gradient(180deg,transparent calc(33.3% - 1px),rgba(0,0,0,.45) calc(33.3% - 1px) 33.3%,rgba(255,236,170,.06) 33.3% calc(33.3% + 1px),transparent calc(33.3% + 1px) calc(66.6% - 1px),rgba(0,0,0,.45) calc(66.6% - 1px) 66.6%,rgba(255,236,170,.06) 66.6% calc(66.6% + 1px),transparent calc(66.6% + 1px)),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.017) 0 1px,transparent 1px 3px),
+  linear-gradient(180deg,#0f2e23 0%,#0a2219 52%,#05140e 100%)}
+.vd-l{left:0}
+.vd-r{right:0;z-index:1}
+.vd-l::before,.vd-r::before{content:"";position:absolute;inset:calc(30*var(--px));border:1px solid rgba(255,205,74,.26);pointer-events:none}
+.vd-l::after,.vd-r::after{content:"";position:absolute;inset:calc(38*var(--px));border:1px solid rgba(255,205,74,.1);pointer-events:none;background:
+  radial-gradient(circle at calc(12*var(--px)) calc(12*var(--px)),#e8bd5a 0 calc(2.6*var(--px)),#6b4a0c calc(2.8*var(--px)) calc(3.8*var(--px)),transparent calc(4.2*var(--px))),
+  radial-gradient(circle at calc(100% - 12*var(--px)) calc(12*var(--px)),#e8bd5a 0 calc(2.6*var(--px)),#6b4a0c calc(2.8*var(--px)) calc(3.8*var(--px)),transparent calc(4.2*var(--px))),
+  radial-gradient(circle at calc(12*var(--px)) calc(100% - 12*var(--px)),#e8bd5a 0 calc(2.6*var(--px)),#6b4a0c calc(2.8*var(--px)) calc(3.8*var(--px)),transparent calc(4.2*var(--px))),
+  radial-gradient(circle at calc(100% - 12*var(--px)) calc(100% - 12*var(--px)),#e8bd5a 0 calc(2.6*var(--px)),#6b4a0c calc(2.8*var(--px)) calc(3.8*var(--px)),transparent calc(4.2*var(--px)))}
+.vd-rv{position:absolute;top:calc(64*var(--px));bottom:calc(64*var(--px));width:calc(12*var(--px));pointer-events:none;background:radial-gradient(circle,#d9a63a 0 calc(2*var(--px)),#5c3e08 calc(2.2*var(--px)) calc(3*var(--px)),transparent calc(3.4*var(--px))) 50% 0/100% calc(40*var(--px)) repeat-y;opacity:.85}
+.vd-l .vd-rv{left:calc(52*var(--px))}
+.vd-r .vd-rv{right:calc(52*var(--px))}
+/* the astragal: the strip of the right door that covers the seam; the bars and the lock plate live on it */
+.vd-as{position:absolute;left:calc(-22*var(--px));top:0;bottom:0;width:calc(44*var(--px));background:linear-gradient(90deg,#06150f,#123a2c 28%,#0d2c21 72%,#06150f);box-shadow:calc(-4*var(--px)) 0 calc(10*var(--px)) rgba(0,0,0,.55)}
+.vd-as::before{content:"";position:absolute;top:0;bottom:0;left:calc(9*var(--px));right:calc(9*var(--px));border-left:1px solid rgba(255,205,74,.24);border-right:1px solid rgba(255,205,74,.24)}
+.vd-lk{position:absolute;left:0;width:0;height:0}
+.vd-as,.vd-lk,.vd-np,.vd-pl,.vd-kp{z-index:1}
+.vd-bar{position:absolute;left:calc(-62*var(--px));top:calc(-10*var(--px));width:calc(100*var(--px));height:calc(20*var(--px));border-radius:calc(5*var(--px));background:linear-gradient(180deg,#fff1c4 0%,#f2c95a 28%,#c99a36 68%,#8a5f12 100%);box-shadow:0 calc(3*var(--px)) 0 rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.6);transition:transform .3s cubic-bezier(.5,0,.2,1)}
+.vd-bar.off{transform:translateX(calc(88*var(--px)))}
+.vd-hs{position:absolute;left:calc(26*var(--px));top:calc(-19*var(--px));width:calc(106*var(--px));height:calc(38*var(--px));border-radius:calc(7*var(--px));background:linear-gradient(180deg,#154230,#0b261c);box-shadow:inset 0 0 0 1px rgba(255,205,74,.42),inset 0 calc(2*var(--px)) 0 rgba(255,236,170,.08),0 calc(4*var(--px)) calc(10*var(--px)) rgba(0,0,0,.5)}
+.vd-hs::before,.vd-hs::after{content:"";position:absolute;top:50%;width:calc(7*var(--px));height:calc(7*var(--px));margin-top:calc(-3.5*var(--px));border-radius:50%;background:#e8bd5a;box-shadow:0 0 0 calc(1.6*var(--px)) #5c3e08}
+.vd-hs::before{left:calc(12*var(--px))}.vd-hs::after{right:calc(12*var(--px))}
+.vd-kp{position:absolute;right:calc(40*var(--px));width:calc(30*var(--px));height:calc(34*var(--px));margin-top:calc(-17*var(--px));border:calc(5*var(--px)) solid #c99a36;border-right:0;border-radius:calc(5*var(--px)) 0 0 calc(5*var(--px));box-shadow:0 calc(3*var(--px)) 0 rgba(0,0,0,.4)}
+/* the lock plate, the wheel, the ring that fills */
+.vd-pl{position:absolute;left:0;top:50%;width:calc(250*var(--px));height:calc(250*var(--px));translate:-50% -50%;border-radius:calc(24*var(--px));background:
+  radial-gradient(circle at calc(20*var(--px)) calc(20*var(--px)),#e8bd5a 0 calc(3.4*var(--px)),#6b4a0c calc(3.6*var(--px)) calc(4.8*var(--px)),transparent calc(5.2*var(--px))),
+  radial-gradient(circle at calc(100% - 20*var(--px)) calc(20*var(--px)),#e8bd5a 0 calc(3.4*var(--px)),#6b4a0c calc(3.6*var(--px)) calc(4.8*var(--px)),transparent calc(5.2*var(--px))),
+  radial-gradient(circle at calc(20*var(--px)) calc(100% - 20*var(--px)),#e8bd5a 0 calc(3.4*var(--px)),#6b4a0c calc(3.6*var(--px)) calc(4.8*var(--px)),transparent calc(5.2*var(--px))),
+  radial-gradient(circle at calc(100% - 20*var(--px)) calc(100% - 20*var(--px)),#e8bd5a 0 calc(3.4*var(--px)),#6b4a0c calc(3.6*var(--px)) calc(4.8*var(--px)),transparent calc(5.2*var(--px))),
+  linear-gradient(160deg,#17473a,#0d2d22 58%,#081d15);box-shadow:inset 0 0 0 1px rgba(255,205,74,.5),inset 0 0 0 calc(10*var(--px)) rgba(0,0,0,.16),inset 0 0 0 calc(11*var(--px)) rgba(255,205,74,.16),0 calc(20*var(--px)) calc(44*var(--px)) rgba(0,0,0,.6)}
+.vd-spin{position:absolute;inset:13%;will-change:transform}
+.vd-spin svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 calc(5*var(--px)) calc(5*var(--px)) rgba(0,0,0,.5))}
+.vd-ring{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;transition:opacity .25s}
+.vd-ring path{fill:none}
+.vd-ring .trk{stroke:rgba(255,205,74,.2);stroke-width:.6}
+.vd-ring .arc{stroke:#ffd970;stroke-width:1.3;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
+.vd-np{position:absolute;left:0;top:calc(50% - 146*var(--px));translate:-50% -100%;padding:calc(8*var(--px)) calc(20*var(--px)) calc(7*var(--px));border-radius:calc(6*var(--px));background:linear-gradient(180deg,#ffe7a6,#e6b44a 48%,#b5821f);box-shadow:0 calc(3*var(--px)) 0 #5c3e08,inset 0 1px 0 rgba(255,255,255,.65);font-family:Bowlby,Unbounded,sans-serif;font-weight:400;font-size:calc(28*var(--px));line-height:1;letter-spacing:.01em;color:#3a2504;text-shadow:0 1px 0 rgba(255,246,214,.6);white-space:nowrap}
+/* the light through the crack as the doors part */
+.vd-sl{position:absolute;left:0;right:0;top:0;bottom:0;background:linear-gradient(90deg,transparent 36%,rgba(255,232,165,.5) 50%,transparent 64%);transform:scaleX(.01);opacity:0;pointer-events:none}
+@keyframes vdGone{to{visibility:hidden}}
+@keyframes dlOpen{0%{transform:none;animation-timing-function:cubic-bezier(.3,0,.3,1)}9%{transform:translateX(calc(-7*var(--px)))}15%{transform:translateX(calc(-7*var(--px)));animation-timing-function:cubic-bezier(.6,0,.12,1)}100%{transform:translateX(-101%)}}
+@keyframes drOpen{0%{transform:none;animation-timing-function:cubic-bezier(.3,0,.3,1)}9%{transform:translateX(calc(7*var(--px)))}15%{transform:translateX(calc(7*var(--px)));animation-timing-function:cubic-bezier(.6,0,.12,1)}100%{transform:translateX(101%)}}
+@keyframes vdSl{0%{opacity:0;transform:scaleX(.01)}20%{opacity:1;transform:scaleX(.05)}100%{opacity:0;transform:scaleX(1.1)}}
+
+.vd-hint{position:absolute;left:50%;top:calc(50% + 148*var(--px));translate:-50% 0;z-index:2;padding:calc(8*var(--px)) calc(16*var(--px)) calc(8*var(--px)) calc(20*var(--px));border-radius:999px;background:rgba(2,13,9,.78);border:1px solid rgba(255,205,74,.3);font-family:var(--mono);font-size:max(10px,calc(12*var(--px)));font-weight:700;letter-spacing:.34em;color:rgba(255,236,190,.82);white-space:nowrap;pointer-events:none;animation:holdIn .5s .25s var(--ease) both,holdPulse 2.4s 1.2s ease-in-out infinite;transition:color .2s,opacity .25s,border-color .2s}
+.vdoor.held .vd-hint{color:#ffd970;border-color:rgba(255,205,74,.7);animation:none}
+@keyframes holdIn{from{opacity:0;translate:-50% 8px}}
+@keyframes holdPulse{50%{color:rgba(255,236,190,.45)}}
+.vdoor.open{pointer-events:none;animation:vdGone 0s 1.25s both}
+.vdoor.open .vd-ring,.vdoor.open .vd-hint{opacity:0}
+.vdoor.open .vd-l{animation:dlOpen 1.05s cubic-bezier(.7,0,.2,1) .06s both}
+.vdoor.open .vd-r{animation:drOpen 1.05s cubic-bezier(.7,0,.2,1) .06s both}
+.vdoor.open .vd-sl{animation:vdSl 1.1s .12s ease-out both}
+/* leaving: the doors slam shut, then the bars drop back in */
+.vdoor.shut{animation:vdSlam .22s .46s ease-out}
+.vdoor.shut .vd-l{animation:dlShut .46s cubic-bezier(.55,0,.8,.3) both}
+.vdoor.shut .vd-r{animation:drShut .46s cubic-bezier(.55,0,.8,.3) both}
+.vdoor.shut .vd-bar{transition-delay:.5s}
+@keyframes dlShut{from{transform:translateX(-101%)}to{transform:none}}
+@keyframes drShut{from{transform:translateX(101%)}to{transform:none}}
+@keyframes vdSlam{0%,100%{translate:0 0}30%{translate:0 4px}65%{translate:0 -2px}}
+
+/* ---------------- searchlights over the city, a gold shine on the name */
+#beams{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:-2;pointer-events:none;mix-blend-mode:screen;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 46%,transparent 58%);mask-image:linear-gradient(180deg,#000 0%,#000 46%,transparent 58%)}
+.wm::after{content:attr(data-w);position:absolute;left:0;top:0;color:transparent;text-shadow:none;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.9) 48%,rgba(255,236,170,.9) 52%,transparent 62%) no-repeat;background-size:260% 100%;background-position:130% 0;-webkit-background-clip:text;background-clip:text;animation:wmShine 7.5s 2.8s ease-in-out infinite;pointer-events:none}
+@keyframes wmShine{0%{background-position:130% 0}22%,100%{background-position:-30% 0}}
+/* ---------------- live boxes rising out of the city: real boxes from the vault */
+.tags{position:absolute;inset:0;z-index:0;pointer-events:none}
+.tag{position:absolute;translate:-50% 0;rotate:var(--r,0deg);filter:drop-shadow(0 10px 14px rgba(0,0,0,.55));animation:tagUp 4.6s var(--ease) both}
+/* each one a deposit slip, the same paper the terminal prints its receipts on */
+.tag .tg{--z:5px;display:grid;gap:1px;min-width:132px;padding:8px 12px 13px;background:#fbf6e8 repeating-linear-gradient(180deg,transparent 0 3px,rgba(70,50,10,.035) 3px 4px);color:#1a140a;font-family:var(--mono);font-size:10.5px;line-height:1.35;font-weight:600;letter-spacing:.04em;white-space:nowrap;font-feature-settings:normal;
+  -webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - var(--z)) no-repeat,conic-gradient(from -45deg at bottom,#000 90deg,#0000 0) bottom/calc(var(--z)*2) var(--z) repeat-x;
+  mask:linear-gradient(#000 0 0) top/100% calc(100% - var(--z)) no-repeat,conic-gradient(from -45deg at bottom,#000 90deg,#0000 0) bottom/calc(var(--z)*2) var(--z) repeat-x}
+.tag .t1{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:800;letter-spacing:.2em;color:#54462a}
+.tag .t1 img{width:14px;height:14px;border-radius:50%;object-fit:cover}
+.tag .t2{font-size:13.5px;font-weight:800;letter-spacing:.01em;color:#1a140a}
+.tag .t3{font-size:9.5px;letter-spacing:.06em;color:#54462a}
+.tag .t3 b{color:#1a140a;font-weight:800}
+@keyframes tagUp{0%{opacity:0;transform:translateY(16px) scale(.92)}12%{opacity:1;transform:none}80%{opacity:1;transform:translateY(-26px)}100%{opacity:0;transform:translateY(-38px)}}
+
+/* one screen: the city, the word, the line, the buttons. Nothing under it. */
+html,body{height:100%}
+@media (min-height:560px){html,body{overflow:hidden}}
+@media (pointer:fine){.hero .btn,.hero a,.hero button{cursor:pointer}}
+@media (max-width:520px){.btn{height:50px;padding:0 20px;font-size:12.5px}.feat{flex-direction:column;letter-spacing:.16em;gap:.7em}.feat .fg{gap:.8em}.feat .fm{display:none}.tag .tg{min-width:116px;padding:7px 10px 12px}.tag .t2{font-size:12.5px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.vdoor,#dust,.tags,#beams{display:none}.wm::after{display:none}.js .feat,.js .cta,.js .links,.js .spk{opacity:1}.js .hero .poster,.js #cityGL{transform:none}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="vdoor" id="vdoor" aria-hidden="true"><div class="vd-sl"></div><div class="vd-l"><i class="vd-rv"></i><i class="vd-kp" style="top:min(12%,calc(50% - 300*var(--px)))"></i><i class="vd-kp" style="top:min(22%,calc(50% - 226*var(--px)))"></i><i class="vd-kp" style="top:max(78%,calc(50% + 226*var(--px)))"></i><i class="vd-kp" style="top:max(88%,calc(50% + 300*var(--px)))"></i></div><div class="vd-r"><i class="vd-rv"></i><div class="vd-as"></div><div class="vd-lk" style="top:min(12%,calc(50% - 300*var(--px)));--d:0.1s"><i class="vd-bar"></i><i class="vd-hs"></i></div><div class="vd-lk" style="top:min(22%,calc(50% - 226*var(--px)));--d:0.16s"><i class="vd-bar"></i><i class="vd-hs"></i></div><div class="vd-lk" style="top:max(78%,calc(50% + 226*var(--px)));--d:0.22s"><i class="vd-bar"></i><i class="vd-hs"></i></div><div class="vd-lk" style="top:max(88%,calc(50% + 300*var(--px)));--d:0.28s"><i class="vd-bar"></i><i class="vd-hs"></i></div><div class="vd-np">bankz</div><div class="vd-pl"><div class="vd-spin"><svg viewBox="-100 -100 200 200" aria-hidden="true"><defs><linearGradient id="vdS" x1="0" x2="1"><stop offset="0" stop-color="#7a8385"/><stop offset=".45" stop-color="#f0f3f3"/><stop offset="1" stop-color="#868f91"/></linearGradient><radialGradient id="vdK" cx=".38" cy=".32" r=".78"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#c4cbcd"/><stop offset="1" stop-color="#5a6365"/></radialGradient></defs><g id="vdArm"><rect x="-8" y="-82" width="16" height="64" rx="8" fill="url(#vdS)"/><circle cy="-84" r="14" fill="url(#vdK)" stroke="#3b4345" stroke-width="1.5"/></g><use href="#vdArm" transform="rotate(120)"/><use href="#vdArm" transform="rotate(240)"/><circle r="31" fill="url(#vdK)" stroke="#3b4345" stroke-width="2"/><circle r="14" fill="#263032"/><circle r="6" fill="#5b6466"/></svg></div><svg class="vd-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="trk" d="M50 4.4H90.4A5.2 5.2 0 0 1 95.6 9.6V90.4A5.2 5.2 0 0 1 90.4 95.6H9.6A5.2 5.2 0 0 1 4.4 90.4V9.6A5.2 5.2 0 0 1 9.6 4.4Z"/><path class="arc" d="M50 4.4H90.4A5.2 5.2 0 0 1 95.6 9.6V90.4A5.2 5.2 0 0 1 90.4 95.6H9.6A5.2 5.2 0 0 1 4.4 90.4V9.6A5.2 5.2 0 0 1 9.6 4.4Z" pathLength="100"/></svg></div></div><div class="vd-hint">HOLD TO OPEN</div></div>
+<noscript><style>.vdoor{display:none}</style></noscript>
+
+<section class="hero" id="hero">
+  <div class="poster" aria-hidden="true"></div>
+  <canvas id="cityGL" aria-hidden="true"></canvas>
+  <canvas id="beams" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+  <canvas id="dust" aria-hidden="true"></canvas>
+  <div class="tags" id="tags" aria-hidden="true"></div>
+  <div class="stack" id="stack">
+    <h1 class="wm" id="wm" aria-label="bankz" data-w="bankz"><span class="l" aria-hidden="true">b</span><span class="l" aria-hidden="true">a</span><span class="l" aria-hidden="true">n</span><span class="l" aria-hidden="true">k</span><span class="l" aria-hidden="true">z</span><i class="spk s1" aria-hidden="true"></i><i class="spk s2" aria-hidden="true"></i><i class="spk s3" aria-hidden="true"></i></h1>
+    <div class="feat"><span class="fg"><span data-t>Lock your bags</span><i aria-hidden="true"></i><span data-t>The vault</span></span><i class="fm" aria-hidden="true"></i><span class="fg"><span data-t>Teller</span><i aria-hidden="true"></i><span data-t>Savings</span><i aria-hidden="true"></i><span data-t>Black card</span></span></div>
+    <div class="cta">
+      <a class="btn pri" href="/app#vault"><span class="bl">Open the vault</span> <span class="a">→</span></a>
+      <a class="btn sec" href="/app#overview"><span class="bl">Enter the terminal</span></a>
+    </div>
+    <div class="links" id="caSlot"></div>
+  </div>
+</section>
+
+<script src="/assets/js/config.js?v=b1"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+  const CFG = window.BANKZ || window.MARKETS || {};
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fine = matchMedia('(pointer: fine)').matches, still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rnd = n => Math.floor(Math.random() * n), T0 = performance.now(), stack = $('#stack');
+
+  // launch links: only once the coin is live
+  {
+    const xs = CFG.x ? `<a class="xl" href="${esc(CFG.x)}" target="_blank" rel="noopener" aria-label="bankz on X"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h7l4.8 6.3L18.9 2zm-1.2 18h1.9L7.1 3.9H5.1L17.7 20z"/></svg></a>` : '';
+    const ca = CFG.ca ? `<div class="ca"><span>$BANKZ</span><code>${esc(CFG.ca.slice(0, 5))}…${esc(CFG.ca.slice(-5))}</code><button id="cp" type="button">COPY</button></div>` : '';
+    $('#caSlot').innerHTML = ca + xs;
+    const cp = $('#cp'); if (cp) cp.onclick = () => { navigator.clipboard && navigator.clipboard.writeText(CFG.ca); cp.textContent = 'COPIED'; setTimeout(() => { cp.textContent = 'COPY'; }, 1400); };
+  }
+
+  // the wordmark flips in letter by letter, like a board at the bank; now and then one letter flips again
+  const L = $$('#wm .l');
+  const flipOne = l => { l.classList.remove('in', 'flip'); l.style.animationDelay = ''; void l.offsetWidth; l.classList.add('flip'); };
+  function wmIn() {
+    L.forEach((l, i) => { l.style.animationDelay = (0.16 + i * 0.09) + 's'; l.classList.add('in'); });
+    (function churn() { setTimeout(() => { if (!document.hidden) flipOne(L[rnd(L.length)]); churn(); }, 4800 + Math.random() * 3600); })();
+    if (fine) { let last = 0; $('#wm').addEventListener('pointerenter', () => { if (performance.now() - last < 1400) return; last = performance.now(); L.forEach((l, i) => setTimeout(() => flipOne(l), i * 70)); }); }
+  }
+
+  // split-flap: each word rolls through the alphabet to its letters, left to right
+  const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function flap(el, ms, delay) {
+    if (el.dataset.busy) return; el.dataset.busy = 1;
+    const t = el.dataset.t || el.textContent; el.dataset.t = t;
+    el.style.width = el.getBoundingClientRect().width + 'px'; el.style.overflow = 'hidden'; el.style.whiteSpace = 'nowrap';
+    const up = t.toUpperCase(), t0 = performance.now() + (delay || 0); let last = 0;
+    const frame = k => [...up].map((ch, i) => { if (ch === ' ') return ' '; const done = k * (up.length + 4) - i; if (done >= 4 || AZ.indexOf(ch) < 0) return t[i]; const target = AZ.indexOf(ch), steps = Math.max(0, Math.floor(done * 3)); return AZ[(target + 26 - Math.max(1, 12 - steps)) % 26]; }).join('');
+    el.textContent = frame(0);
+    (function step(now) {
+      const k = Math.max(0, Math.min(1, (now - t0) / ms));
+      if (now - last > 40 || k >= 1) { last = now; el.textContent = k >= 1 ? t : frame(k); }
+      if (k < 1) requestAnimationFrame(step); else { el.style.width = el.style.overflow = el.style.whiteSpace = ''; delete el.dataset.busy; }
+    })(performance.now());
+  }
+  const words = $$('.feat [data-t]');
+  const fontsIn = Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise(r => setTimeout(r, 900))]);
+  function wordsIn() {
+    fontsIn.then(() => {
+      words.forEach((w, i) => flap(w, 560, 420 + i * 110));
+      (function churn() { setTimeout(() => { if (!document.hidden) flap(words[rnd(words.length)], 600, 0); churn(); }, 6200 + Math.random() * 3200); })();
+    });
+    if (fine) $$('.btn .bl').forEach(b => b.closest('.btn').addEventListener('pointerenter', () => flap(b, 420, 0)));
+  }
+
+  // the city at night, emerald and gold (the poster shows until the first frame)
+  let city = null;
+  const EMERALD = { zen: [0.001, 0.006, 0.008], mid: [0.004, 0.035, 0.032], hor: [0.06, 0.26, 0.17], fog: [0.02, 0.075, 0.055], glow: [0.1, 0.34, 0.2], cl0: [0.01, 0.03, 0.025], cl1: [0.09, 0.28, 0.19], wall: 0.3, far: 0.4, neonK: 1.8, beam: 0.11, hemi: ['#3fe0a0', '#020a07', 0.12], sun: ['#7fffd0', 0.12], fill: ['#ffc84a', 0.16], water: '#010806', glint: '#ffd27a', neon: ['#ffd34f', '#2ee6a0', '#f6f4e8', '#ffb13d', '#5af0c8', '#ffd34f', '#2ee6a0'] };
+  function glOk() { try { return !!document.createElement('canvas').getContext('webgl2'); } catch (e) { return false; } }
+  function boot() {
+    if (still || !glOk()) return;
+    import('/assets/js/city3d.js?v=b1').then(m => {
+      city = m.startCity($('#cityGL'), { pal: EMERALD, fog: 0.0002, exposure: 1.0, night: 1, sunElev: 1, sunAz: 284, landmark: false, onFirst: () => $('#cityGL').classList.add('on') });
+    }).catch(e => console.warn('city', e));
+  }
+  if (document.readyState === 'complete') setTimeout(boot, 60); else addEventListener('load', () => setTimeout(boot, 60));
+  if (fine && !still) addEventListener('pointermove', e => { if (city && city.setPointer) city.setPointer(e.clientX / innerWidth * 2 - 1, e.clientY / innerHeight * 2 - 1); }, { passive: true });
+  if (fine && !still) $$('.btn').forEach(b => { b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.translate = `${((e.clientX - r.left) / r.width - 0.5) * 10}px ${((e.clientY - r.top) / r.height - 0.5) * 8}px`; }); b.addEventListener('pointerleave', () => { b.style.translate = '0 0'; }); });
+
+  // gold dust in the light: slow glints drifting up, each one twinkling as it turns
+  function dust() {
+    const c = $('#dust'); if (!c || !c.getContext) return; const g = c.getContext('2d');
+    let W = 0, H = 0, D = [], last = 0, raf = 0;
+    const mk = any => ({ x: Math.random() * W, y: any ? Math.random() * H : H + 10, v: 8 + Math.random() * 18, s: 1.2 + Math.pow(Math.random(), 2) * 3.4, ph: Math.random() * 6.28, w: 0.6 + Math.random() * 1.6, sway: Math.random() * 6.28, gold: Math.random() < 0.7 });
+    function size() { const r = Math.min(devicePixelRatio || 1, 1.5); W = c.clientWidth; H = c.clientHeight; c.width = Math.round(W * r); c.height = Math.round(H * r); g.setTransform(r, 0, 0, r, 0, 0); D = Array.from({ length: Math.max(26, Math.min(70, Math.round(W * H / 26000))) }, () => mk(true)); }
+    const star = (x, y, r, a, col) => { g.globalAlpha = a; g.fillStyle = col; g.beginPath(); for (let i = 0; i < 8; i++) { const ang = i * Math.PI / 4 - Math.PI / 2, rr = i % 2 ? r * 0.24 : r; g.lineTo(x + Math.cos(ang) * rr, y + Math.sin(ang) * rr); } g.closePath(); g.fill(); };
+    function frame(now) {
+      raf = requestAnimationFrame(frame); if (now - last < 32) return; const dt = Math.min(0.05, (now - last) / 1000); last = now; const t = now / 1000;
+      g.clearRect(0, 0, W, H);
+      for (const d of D) {
+        d.y -= d.v * dt; d.x += Math.sin(t * 0.6 + d.sway) * 6 * dt; if (d.y < -10) Object.assign(d, mk(false));
+        const tw = 0.5 + 0.5 * Math.sin(t * d.w * 2 + d.ph), fade = Math.min(1, d.y / (H * 0.25)) * Math.min(1, (H - d.y) / 60 + 0.2);
+        star(d.x, d.y, d.s * (0.6 + tw * 0.6), Math.max(0, (0.18 + tw * 0.62) * fade), d.gold ? '#ffd970' : '#fff8e6');
+      }
+      g.globalAlpha = 1;
+    }
+    size(); addEventListener('resize', size);
+    const vis = () => { cancelAnimationFrame(raf); raf = 0; if (!document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } };
+    document.addEventListener('visibilitychange', vis); vis();
+  }
+
+  // searchlights: two beams sweeping the sky behind the towers, crossing now and then
+  function beams() {
+    const c = $('#beams'); if (!c || !c.getContext) return; const g = c.getContext('2d');
+    let W = 0, H = 0, raf = 0, last = 0;
+    const B = [{ x: 0.22, a: -0.32, amp: 0.38, sp: 0.21, ph: 0.4, w: 0.055 }, { x: 0.79, a: 0.3, amp: 0.36, sp: 0.17, ph: 2.1, w: 0.05 }, { x: 0.52, a: 0.05, amp: 0.5, sp: 0.12, ph: 4.2, w: 0.04 }];
+    function size() { const r = Math.min(devicePixelRatio || 1, 1.5); W = c.clientWidth; H = c.clientHeight; c.width = Math.round(W * r); c.height = Math.round(H * r); g.setTransform(r, 0, 0, r, 0, 0); }
+    function frame(now) {
+      raf = requestAnimationFrame(frame); if (now - last < 32) return; last = now; const t = now / 1000;
+      g.clearRect(0, 0, W, H); const L = Math.hypot(W, H) * 1.05, oy = H * 0.6;
+      for (const b of B) {
+        if (W < 600 && b.x === 0.52) continue;
+        const ang = b.a + Math.sin(t * b.sp + b.ph) * b.amp, ox = W * b.x, dx = Math.sin(ang), dy = -Math.cos(ang), px = -dy, py = dx, half = L * b.w;
+        const ex = ox + dx * L, ey = oy + dy * L;
+        const gr = g.createLinearGradient(ox, oy, ex, ey); gr.addColorStop(0, 'rgba(255,238,190,.22)'); gr.addColorStop(0.45, 'rgba(255,226,150,.08)'); gr.addColorStop(1, 'rgba(255,226,150,0)');
+        g.fillStyle = gr; g.beginPath(); g.moveTo(ox - px * 3, oy - py * 3); g.lineTo(ox + px * 3, oy + py * 3); g.lineTo(ex + px * half, ey + py * half); g.lineTo(ex - px * half, ey - py * half); g.closePath(); g.fill();
+      }
+    }
+    size(); addEventListener('resize', size);
+    const vis = () => { cancelAnimationFrame(raf); raf = 0; if (!document.hidden) { last = 0; raf = requestAnimationFrame(frame); } };
+    document.addEventListener('visibilitychange', vis); vis();
+  }
+
+  // live from the vault: real boxes rise out of the city one at a time as deposit slips (nothing shows until there are boxes)
+  async function tags() {
+    let boxes = [];
+    try { const r = await fetch('/api/m?a=boxes', { cache: 'no-store' }); const j = await r.json(); boxes = (j.boxes || []).filter(b => b.state === 'locked'); } catch { return; }
+    if (!boxes.length) return;
+    const amt = x => x >= 1e9 ? (x / 1e9).toFixed(1) + 'B' : x >= 1e6 ? (x / 1e6).toFixed(1) + 'M' : x >= 1e3 ? (x / 1e3).toFixed(1) + 'K' : x >= 1 ? x.toFixed(1) : x.toPrecision(2);
+    const left = s => { const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600); return d ? `${d}d` : `${h}h`; };
+    const box = $('#tags'); let k = 0;
+    // a spot clear of the title, the line and the buttons, for a slip of this size (it drifts up ~40px as it fades)
+    const spot = (w, h) => { const W = innerWidth, H = innerHeight, R = ['#wm', '.feat', '.cta'].map(s => $(s).getBoundingClientRect()), L = Math.min(...R.map(r => r.left)) - 18, Rt = Math.max(...R.map(r => r.right)) + 18, T = R[0].top - 24, Bt = R[2].bottom + 24;
+      for (let i = 0; i < 40; i++) { const x = Math.max(w / 2 + 10, Math.min(W - w / 2 - 10, 90 + Math.random() * (W - 180))), y = H * (0.3 + Math.random() * 0.5); if (x + w / 2 > L && x - w / 2 < Rt && y + h + 18 > T && y - 40 < Bt) continue; return [x, y]; } return null; };
+    const show = () => {
+      if (document.hidden || box.childElementCount >= 2) return;
+      const b = boxes[k++ % boxes.length], el = document.createElement('div'); el.className = 'tag'; el.style.visibility = 'hidden';
+      el.innerHTML = `<div class="tg"><span class="t1">${b.icon ? `<img src="${esc(b.icon)}" alt="" onerror="this.remove()">` : ''}BOX No. ${String(b.n).padStart(4, '0')}</span><span class="t2">${esc(amt(b.amount))} ${esc(b.sym)}</span><span class="t3">opens in <b>${left(b.unlock - Date.now() / 1000)}</b></span></div>`;
+      el.style.setProperty('--r', ((Math.random() - 0.5) * 7).toFixed(1) + 'deg');
+      box.appendChild(el); const p = spot(el.offsetWidth + 22, el.offsetHeight); if (!p) { el.remove(); return; }
+      el.style.left = p[0].toFixed(0) + 'px'; el.style.top = p[1].toFixed(0) + 'px'; el.style.visibility = ''; setTimeout(() => el.remove(), 4700);
+    };
+    setTimeout(function loop() { show(); setTimeout(loop, 2400 + Math.random() * 1800); }, 1500);
+  }
+
+  // ---------------------------------------------------------------- the vault door: hold to open it, or wait and it opens itself
+  let entered = false;
+  function enter() {
+    if (entered) return; entered = true;
+    document.documentElement.classList.add('entered');
+    if (still) return;
+    wmIn(); wordsIn(); tags();
+  }
+  function door() {
+    const v = $('#vdoor'); if (!v || still) { if (v) v.remove(); return enter(); }
+    const vw = v.querySelector('.vd-spin'), arc = v.querySelector('.vd-ring .arc'), B = $$('#vdoor .vd-bar');
+    let seen = false; try { seen = sessionStorage.getItem('bankz.door') === '1'; } catch (e) { }
+    // first visit: the ring fills by itself in about 2 s, holding makes it 3x faster; back again this session: it just opens
+    const AUTO = seen ? 1 / 0.5 : 1 / 2.1, WAIT = seen ? 60 : 420, HOLD = 1 / 0.62, buzz = matchMedia('(pointer: coarse)').matches && navigator.vibrate ? ms => { try { navigator.vibrate(ms); } catch (e) { } } : () => { };
+    let p = 0, held = false, ang = 0, spd = 0, last = performance.now(), t0 = last, done = false, raf = 0, nb = 0;
+    function frame(now) {
+      const dt = Math.min(0.5, Math.max(0, now - last) / 1000); last = now;   // wall time, so a slow first frame never slows the door
+      const rate = held ? HOLD : now - t0 > WAIT ? AUTO : 0;
+      p = Math.min(1, p + rate * dt);
+      spd += ((held ? 640 : rate ? 80 + p * 300 : 16) - spd) * Math.min(1, dt * 7); ang -= spd * dt;
+      vw.style.transform = `rotate(${ang.toFixed(1)}deg)`;
+      arc.style.strokeDashoffset = (100 - p * 100).toFixed(2);
+      const k = Math.min(B.length, Math.floor(p * (B.length + 1)));    // the bars pull back one by one
+      if (k !== nb) { B.forEach((b, i) => b.classList.toggle('off', i < k)); if (k > nb && held) buzz(9); nb = k; }
+      const sh = held ? 0.5 + p * 1.8 : 0;
+      v.style.setProperty('--sx', sh ? ((Math.random() - 0.5) * sh).toFixed(2) + 'px' : '0px'); v.style.setProperty('--sy', sh ? ((Math.random() - 0.5) * sh).toFixed(2) + 'px' : '0px');
+      if (p >= 1) return open();
+      raf = requestAnimationFrame(frame);
+    }
+    function open() {
+      if (done) return; done = true; cancelAnimationFrame(raf);
+      v.style.setProperty('--sx', '0px'); v.style.setProperty('--sy', '0px'); B.forEach(b => b.classList.add('off')); arc.style.strokeDashoffset = '0';
+      try { sessionStorage.setItem('bankz.door', '1'); } catch (e) { }
+      if (held) buzz([14, 50, 26]);
+      vw.style.transition = 'transform .9s cubic-bezier(.2,.8,.2,1)'; vw.style.transform = `rotate(${(ang - 260).toFixed(1)}deg)`;   // the wheel spins out as the doors part
+      v.classList.remove('held'); v.classList.add('open'); enter();
+    }
+    const down = e => { if (done) return; if (e.type === 'keydown' && (e.repeat || e.metaKey || e.ctrlKey || e.altKey || e.key === 'Tab' || e.key === 'Shift')) return; held = true; v.classList.add('held'); };
+    const up = () => { held = false; v.classList.remove('held'); };
+    v.addEventListener('pointerdown', e => { e.preventDefault(); down(e); });
+    v.addEventListener('contextmenu', e => e.preventDefault());
+    addEventListener('pointerup', up); addEventListener('pointercancel', up); addEventListener('blur', up);
+    addEventListener('keydown', down); addEventListener('keyup', up);
+    raf = requestAnimationFrame(frame);
+    setTimeout(open, 6000);   // a backstop: the door never keeps anyone out
+    door.shut = () => { B.forEach(b => b.classList.remove('off')); vw.style.transition = ''; };
+  }
+  door();
+
+  if (!still) {
+    dust(); beams();
+    if (fine) {
+      // the title floats a touch against the pointer
+      let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+      const st = () => { x += (tx - x) * 0.12; y += (ty - y) * 0.12; stack.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)`; raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.05 ? requestAnimationFrame(st) : 0; };
+      addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - 0.5) * -12; ty = (e.clientY / innerHeight - 0.5) * -7; if (!raf) raf = requestAnimationFrame(st); }, { passive: true });
+    }
+    // leaving: the vault door swings shut, then the terminal opens
+    $$('.cta .btn').forEach(a => a.addEventListener('click', e => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault(); const v = $('#vdoor'); if (!v) { location.href = a.href; return; } door.shut && door.shut(); v.classList.add('shut'); try { sessionStorage.setItem('bankz.via', 'door'); } catch (e2) { } setTimeout(() => { location.href = a.href; }, 620);
+    }));
+    addEventListener('pageshow', e => { if (e.persisted) $('#vdoor').classList.remove('shut'); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>bankz</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#03120d">
+<link rel="icon" href="/assets/img/bankz.ico?v=1" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/bankz-32.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/bankz-192.png?v=1">
+<link rel="apple-touch-icon" href="/assets/img/bankz-180.png?v=1">
+<style>
+@font-face{font-family:Bowlby;src:url(/assets/fonts/bowlby.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:Unbounded;src:url(/assets/fonts/unbounded.woff2) format('woff2');font-weight:200 900;font-display:swap}
+@font-face{font-family:Inter;src:url(/assets/fonts/inter.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:#eef7f0;background:#03120d;-webkit-font-smoothing:antialiased;overflow:hidden}
+.bg{position:fixed;inset:0;background:url(/assets/img/city-poster.jpg) 50% 50%/cover no-repeat;transform:scale(1.06);animation:drift 40s ease-in-out infinite alternate}
+@media (orientation:portrait){.bg{background-image:url(/assets/img/city-poster-m.jpg)}}
+@keyframes drift{to{transform:scale(1.12) translate(-1.5%,1%)}}
+.veil{position:fixed;inset:0;background:radial-gradient(60% 50% at 50% 46%,rgba(3,18,13,.5),transparent 70%),linear-gradient(180deg,rgba(3,18,13,.2),rgba(3,18,13,.4) 55%,rgba(3,18,13,.85))}
+main{position:relative;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff8e6}
+.n{font-family:Bowlby,Unbounded,Inter,sans-serif;font-weight:400;font-size:clamp(110px,22vw,260px);line-height:.85;letter-spacing:-.05em;color:#fff8e6;text-shadow:.045em .045em 0 #2ee6a0,.085em .085em 0 #021a12;font-feature-settings:normal;animation:in 1.2s cubic-bezier(.2,.8,.2,1) both}
+h1{margin-top:22px;font-family:Unbounded,Inter,sans-serif;font-size:clamp(16px,1.8vw,22px);font-weight:800;letter-spacing:-.01em;text-shadow:.06em .06em 0 #021a12;font-feature-settings:normal;animation:in 1s .2s cubic-bezier(.2,.8,.2,1) both}
+p{margin-top:12px;max-width:420px;color:#b9d3c6;line-height:1.6;text-shadow:0 1px 12px rgba(3,18,13,.8);animation:in 1s .3s cubic-bezier(.2,.8,.2,1) both}
+.b{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:30px;animation:in 1s .4s cubic-bezier(.2,.8,.2,1) both}
+.b a{display:inline-flex;align-items:center;height:52px;padding:0 24px;border-radius:999px;font-weight:800;font-size:14.5px;text-decoration:none;transition:transform .3s,box-shadow .3s}
+.b a.p{background:#ffcd4a;color:#2a1a02;box-shadow:0 5px 0 #a8740f}
+.b a.p:hover{transform:translateY(-2px);box-shadow:0 7px 0 #a8740f}
+.b a.s{color:#fff8e6;border:1.5px solid rgba(255,248,230,.55);background:rgba(255,248,230,.08)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+/* the 0 is the vault wheel: somebody keeps trying it, and it is locked */
+.n .o{display:inline-block;width:.86em;height:.86em;margin:0 -.01em;vertical-align:-.06em;filter:drop-shadow(.04em .04em 0 #2ee6a0) drop-shadow(.04em .04em 0 #021a12)}
+.n .o img{display:block;width:100%;height:100%;animation:rattle 3.4s 1.2s ease-in-out infinite}
+.n:hover .o img{animation:rattle .9s ease-in-out}
+@keyframes rattle{0%,60%,100%{transform:rotate(0)}64%{transform:rotate(-18deg)}69%{transform:rotate(10deg)}73%{transform:rotate(-6deg)}77%{transform:rotate(3deg)}81%{transform:rotate(0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div><div class="veil" aria-hidden="true"></div>
+<main>
+  <div class="n" aria-hidden="true">4<span class="o"><img src="/assets/img/wheel-404.webp" alt="" width="300" height="300"></span>4</div>
+  <h1>This floor of the bank does not exist</h1>
+  <p>No box, no teller, no vault at this address. The bank downstairs is open.</p>
+  <div class="b"><a class="p" href="/">Back to the city</a><a class="s" href="/app#vault">Open the vault</a></div>
+</main>
+</body>
+</html>
