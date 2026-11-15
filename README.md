@@ -1,5 +1,7 @@
 # bankz
 
+Live: https://bankzdot.vercel.app
+
 The bank of the city. A terminal on Solana with a vault inside: lock any token in a safe-deposit box that nobody can open before its date (a Jupiter Lock escrow with cancel and redirect switched off), watch every box on the vault wall, earn a card tier, cash memes out at the teller and move SOL into tokenized gold or the S&P 500. Around it: tokenized stocks, Jupiter perps, the pump.fun trenches and the city.
 
 - `/` home: one screen. Two steel vault doors are shut when you arrive: hold anywhere (or any key) and the wheel spins up, four brass bars pull back across the seam and the doors slide apart onto the emerald city; leave it alone and they open by themselves in about two seconds. Live boxes rise out of the city as deposit slips. All of it is CSS and inline SVG, no images.
